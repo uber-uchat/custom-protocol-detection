@@ -1,4 +1,6 @@
 function _registerEvent(target, eventType, cb) {
+    console.log('::::::::::::::::');
+    console.log('::::_registerEvent:target:', target);
     if (target.addEventListener) {
         target.addEventListener(eventType, cb);
         return {
@@ -50,8 +52,10 @@ function openUriWithHiddenFrame(uri, failCb, successCb) {
 }
 
 function openUriWithTimeoutHack(uri, failCb, successCb) {
-    
+
     var timeout = setTimeout(function () {
+        console.log('::::::::::::::::');
+        console.log('::::openUriWithTimeoutHack:TimedOut');
         failCb();
         handler.remove();
     }, 1000);
@@ -67,6 +71,8 @@ function openUriWithTimeoutHack(uri, failCb, successCb) {
     function onBlur() {
         clearTimeout(timeout);
         handler.remove();
+        console.log('::::::::::::::::');
+        console.log('::::openUriWithTimeoutHack:onBlur executed');
         successCb();
     }
 
@@ -174,6 +180,8 @@ function getInternetExplorerVersion() {
 }
 
 module.exports = function(uri, failCb, successCb, unsupportedCb) {
+    console.log(':::::::::::::::::::::::');
+    console.log(':::::custom-protocol-deteccion:', uri);
     function failCallback() {
         failCb && failCb();
     }
@@ -183,17 +191,25 @@ module.exports = function(uri, failCb, successCb, unsupportedCb) {
     }
 
     if (navigator.msLaunchUri) { //for IE and Edge in Win 8 and Win 10
+        console.log(':::::::::::::::::::::::');
+        console.log(':::::navigator.msLaunchUri:', navigator);
         openUriWithMsLaunchUri(uri, failCb, successCb);
     } else {
         var browser = checkBrowser();
+        console.log(':::::::::::::::::::::::');
+        console.log(':::::::::::browser:', browser);
 
         if (browser.isFirefox) {
+            console.log(':::::browser.isFirefox:');
             openUriUsingFirefox(uri, failCallback, successCallback);
         } else if (browser.isChrome) {
+            console.log(':::::browser.isChrome:');
             openUriWithTimeoutHack(uri, failCallback, successCallback);
         } else if (browser.isIE) {
+            console.log(':::::browser.isIE:');
             openUriUsingIEInOlderWindows(uri, failCallback, successCallback);
         } else if (browser.isSafari) {
+            console.log(':::::browser.isSafari:');
             openUriWithHiddenFrame(uri, failCallback, successCallback);
         } else {
             unsupportedCb();
